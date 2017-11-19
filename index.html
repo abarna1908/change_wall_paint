@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html>
+  
+  <head>
+      <style>
+          #myCanvas{
+              margin-left: 20px;
+          }
+      </style>
+    <script type="text/javascript">
+    
+      //Global variables
+      var picWidth = 400; 
+      var picHeight = 400; 
+      var picLength = picWidth * picHeight; 
+      var myImage = new Image(); 
+        
+      function displayImage() {
+          canvas = document.getElementById("myCanvas");
+          if (canvas.getContext) {
+              ctx = canvas.getContext("2d");
+              myImage.onload = function() {
+              ctx.drawImage(myImage, 0, 0, 400, 400);
+              getColorData();
+              putColorData();
+          }
+        myImage.src = "kestral.png";
+        }
+      }
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+      function getColorData() {
+
+        imgData = ctx.getImageData(0, 0, 400, 400);
+        var color = document.querySelector('#color');
+        var obj = hexToRgb(color.value);
+        for (i = 0; i < imgData.data.length; i += 4) {
+            var red= imgData.data[i];
+            var green= imgData.data[i+1];
+            var blue= imgData.data[i+2];
+             
+            if(red>green && green-blue>30 && blue<10){
+                imgData.data[i] = obj.r; 
+                imgData.data[i+1] = obj.g;
+                imgData.data[i+2] = obj.b;
+              
+            }
+        }
+      }
+      function putColorData() {
+          ctx.putImageData(imgData, 0, 0);
+      }
+        function checkColor(num){
+            if(num>=190 && num<=220)
+                return true;
+            else
+                return false;
+        }
+      
+     
+    </script>
+  </head>
+  
+  <body onload="displayImage()">
+    <h1>
+     Choose the wall color
+    </h1><br>
+    Color: <input type="color" id="color" onchange="displayImage()"/>
+    <br><br>
+    <canvas id="myCanvas" width="400" height="400">
+    </canvas>
+    <p>
+      Public domain image courtesy of The Yellow Wall-paper by Charlotte Perkins Stetson.
+    </p>
+  </body>
+
+</html>
